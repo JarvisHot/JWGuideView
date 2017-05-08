@@ -22,6 +22,7 @@ typedef void (^JWClickBlock)();
  pageControlEnable 是否显示pageControl
  indicatorColor 默认pageControl颜色
  currentPageColor 当前选中页的颜色
+ didGoToMain 点击跳转到主页
  
  */
 +(instancetype)guideViewWithFrame:(CGRect)frame
