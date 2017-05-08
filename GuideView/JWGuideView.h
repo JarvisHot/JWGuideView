@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 typedef void (^JWScrollViewDidScrollBlock)(NSInteger Index);
+typedef void (^JWClickBlock)();
 @interface JWGuideView : UIView
 @property(nonatomic,strong)NSArray<UIImage*>*images;
 @property(nonatomic,assign)NSTimeInterval timeInterval;
 @property(nonatomic,copy)JWScrollViewDidScrollBlock didScroll;
+@property(nonatomic,copy)JWClickBlock didGoToMain;
 /*
  初始化引导页
  timeInterval 传 0 时 timer不可用
@@ -25,10 +27,11 @@ typedef void (^JWScrollViewDidScrollBlock)(NSInteger Index);
 +(instancetype)guideViewWithFrame:(CGRect)frame
                            images:(NSArray<UIImage *>*)images
                      timeInterVal:(NSTimeInterval)timeInterval
-                        didScroll:(JWScrollViewDidScrollBlock)didScroll
                 pageControlEnable:(BOOL)pageControlEnable
                pageIndicatorColor:(UIColor*)indicatorColor
-                 currentPageColor:(UIColor*)currentPageColor;
+                 currentPageColor:(UIColor*)currentPageColor
+                        didScroll:(JWScrollViewDidScrollBlock)didScroll
+           didCLickSkipToMainPage:(JWClickBlock)didGoToMain;
 
 /*
  暂停或停止定时器

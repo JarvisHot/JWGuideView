@@ -24,24 +24,26 @@
 @implementation JWGuideView
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 +(instancetype)guideViewWithFrame:(CGRect)frame
                            images:(NSArray<UIImage *>*)images
                      timeInterVal:(NSTimeInterval)timeInterval
-                        didScroll:(JWScrollViewDidScrollBlock)didScroll
                 pageControlEnable:(BOOL)pageControlEnable
                pageIndicatorColor:(UIColor*)indicatorColor
                  currentPageColor:(UIColor*)currentPageColor
+                        didScroll:(JWScrollViewDidScrollBlock)didScroll
+           didCLickSkipToMainPage:(JWClickBlock)didGoToMain
 {
     JWGuideView*guide=[[JWGuideView alloc]initWithFrame:frame];
     guide.timeInterval=timeInterval;
     guide.images=images;
     guide.didScroll = didScroll;
+    guide.didGoToMain =didGoToMain;
     guide.pageControlEnable=pageControlEnable;
     guide.indicatorColor=indicatorColor;
     guide.currentPageColor=currentPageColor;
@@ -93,7 +95,7 @@
         _images=images;
     }
     _backScrollView.contentSize=CGSizeMake(images.count*self.bounds.size.width, self.bounds.size.height);
-
+    
     for (int i=0; i<images.count; i++) {
         UIImage*img=images[i];
         UIImageView*imgV=[[UIImageView alloc]initWithImage:img];
@@ -105,7 +107,7 @@
     }
     _pageControl.numberOfPages=images.count;
     _pageControl.hidesForSinglePage=YES;
-        [self bringSubviewToFront:_pageControl];
+    [self bringSubviewToFront:_pageControl];
     [_backScrollView bringSubviewToFront:_experienceNow];
     if (images.count>1) {
         
@@ -180,9 +182,9 @@
     if (offset>_images.count-2) {
         _pageControl.hidden=YES;
     }else{
-            _pageControl.hidden=NO;
+        _pageControl.hidden=NO;
     }
-
+    
     CGFloat x =scrollView.contentOffset.x-self.frame.size.width;
     NSUInteger index=fabs(x)/self.frame.size.width;
     CGFloat findex=fabs(x)/self.frame.size.width;
@@ -193,12 +195,15 @@
 }
 -(void)skipToMainPage
 {
-    NSTimeInterval frequencyTimestamp = 1.0; //赞最多一秒发一次
+    NSTimeInterval frequencyTimestamp = 0.75;
     NSTimeInterval now = [NSDate date].timeIntervalSince1970;
     if ( now - _lastClickTime > frequencyTimestamp) {
         _lastClickTime = now;
-        NSLog(@"didclick experienceNow methodCall");
- 
+//        NSLog(@"didclick experienceNow methodCall");
+        if (self.didGoToMain) {
+            self.didGoToMain();
+        }
+        
     }
 }
 
